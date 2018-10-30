@@ -56,7 +56,8 @@ namespace D2DAdvancedColorImages
         void SetRenderOptions(
             RenderEffectKind effect,
             float brightnessAdjustment,
-            Windows::Graphics::Display::AdvancedColorInfo^ acInfo
+            Windows::Graphics::Display::AdvancedColorInfo^ acInfo,
+            bool hdrTonemapOptimizeForSdr = true
             );
 
         ImageInfo LoadImageFromWic(_In_ IStream* imageStream);

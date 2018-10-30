@@ -327,8 +327,8 @@ void DirectXPage::UpdateDefaultRenderOptions()
 
         // Manual brightness adjustment is only useful for HDR content.
         // SDR and WCG content is adjusted by the OS-provided AdvancedColorInfo::SdrWhiteLevel parameter.
-        BrightnessAdjustSlider->Value = 1.0f;
-        BrightnessAdjustPanel->Visibility = Windows::UI::Xaml::Visibility::Collapsed;
+        //BrightnessAdjustSlider->Value = 1.0f;
+        //BrightnessAdjustPanel->Visibility = Windows::UI::Xaml::Visibility::Collapsed;
         break;
 
     case AdvancedColorKind::HighDynamicRange:
@@ -350,10 +350,20 @@ void DirectXPage::UpdateRenderOptions()
     {
         auto tm = static_cast<EffectOption^>(RenderEffectCombo->SelectedItem);
 
+        // Debug: manually fixup the Optimize SDR option.
+        bool optimizeSdr = false;
+        RenderEffectKind kind = tm->Kind;
+        if (tm->Kind == RenderEffectKind::HdrTonemapOptimizeSdr)
+        {
+            kind = RenderEffectKind::HdrTonemap;
+            optimizeSdr = true;
+        }
+
         m_renderer->SetRenderOptions(
-            tm->Kind,
+            kind,
             static_cast<float>(BrightnessAdjustSlider->Value),
-            m_dispInfo
+            m_dispInfo,
+            optimizeSdr
             );
     }
 }

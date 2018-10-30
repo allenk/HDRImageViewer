@@ -124,12 +124,13 @@ void D2DAdvancedColorImagesRenderer::CreateWindowSizeDependentResources()
 void D2DAdvancedColorImagesRenderer::SetRenderOptions(
     RenderEffectKind effect,
     float brightnessAdjustment,
-    AdvancedColorInfo^ acInfo
+    AdvancedColorInfo^ acInfo,
+    bool hdrTonemapOptimizeForSdr
     )
 {
     m_dispInfo = acInfo;
     m_renderEffectKind = effect;
-    m_brightnessAdjust = brightnessAdjustment;
+    m_brightnessAdjust = 1.0f;
 
     auto sdrWhite = m_dispInfo ? m_dispInfo->SdrWhiteLevelInNits : sc_nominalRefWhite;
 
@@ -190,8 +191,14 @@ void D2DAdvancedColorImagesRenderer::SetRenderOptions(
                 m_hdrTonemapEffect->SetValue(D2D1_HDRTONEMAP_PROP_DISPLAY_MODE, D2D1_HDRTONEMAP_DISPLAY_MODE_SDR));
         }
 
+        // debug: override with explicit SDR optimization mode
+        D2D1_HDRTONEMAP_DISPLAY_MODE mode = hdrTonemapOptimizeForSdr ? D2D1_HDRTONEMAP_DISPLAY_MODE_SDR : D2D1_HDRTONEMAP_DISPLAY_MODE_HDR;
+        DX::ThrowIfFailed(
+            m_hdrTonemapEffect->SetValue(D2D1_HDRTONEMAP_PROP_DISPLAY_MODE, mode));
+
         // A luminance value of 0 means it is unknown, so we pick a default value. Many HDR TVs do not report HDR metadata.
-        float maxNits = m_dispInfo->MaxLuminanceInNits == 0 ? sc_DefaultDispMaxNits : m_dispInfo->MaxLuminanceInNits;
+        //float maxNits = m_dispInfo->MaxLuminanceInNits == 0 ? sc_DefaultDispMaxNits : m_dispInfo->MaxLuminanceInNits;
+        float maxNits = brightnessAdjustment;
 
         DX::ThrowIfFailed(m_hdrTonemapEffect->SetValue(D2D1_HDRTONEMAP_PROP_OUTPUT_MAX_LUMINANCE, maxNits));
     }

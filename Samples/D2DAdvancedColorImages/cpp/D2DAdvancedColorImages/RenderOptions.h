@@ -23,6 +23,7 @@ namespace D2DAdvancedColorImages
     public enum class RenderEffectKind
     {
         HdrTonemap,
+        HdrTonemapOptimizeSdr,
         None,
         SdrOverlay,
         LuminanceHeatmap,
@@ -69,6 +70,7 @@ namespace D2DAdvancedColorImages
             {
                 ref new EffectOption(L"No effect", RenderEffectKind::None),
                 ref new EffectOption(L"HDR tonemap", RenderEffectKind::HdrTonemap),
+                ref new EffectOption(L"HDR tonemap (SDR OPT)", RenderEffectKind::HdrTonemapOptimizeSdr),
                 ref new EffectOption(L"Draw SDR as grayscale", RenderEffectKind::SdrOverlay),
                 ref new EffectOption(L"Draw luminance as heatmap", RenderEffectKind::LuminanceHeatmap),
                 // TODO: Temporarily disable sphere map in UI for the upcoming app release.
